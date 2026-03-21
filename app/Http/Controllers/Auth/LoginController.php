@@ -45,6 +45,7 @@ class LoginController extends Controller
     private function redirectByRole(): string
     {
         return match (auth()->user()->rol) {
+            'superadmin' => route('superadmin.dashboard'),
             'admin' => route('admin.dashboard'),
             'docente' => route('docente.dashboard'),
             'alumno' => route('alumno.dashboard'),

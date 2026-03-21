@@ -53,6 +53,11 @@ class User extends Authenticatable
 
     // --- Helpers de rol ---
 
+    public function esSuperAdmin(): bool
+    {
+        return $this->rol === 'superadmin';
+    }
+
     public function esAdmin(): bool
     {
         return $this->rol === 'admin';

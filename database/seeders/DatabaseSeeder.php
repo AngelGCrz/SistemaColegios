@@ -18,7 +18,9 @@ use App\Models\Nota;
 use App\Models\Padre;
 use App\Models\Pago;
 use App\Models\Periodo;
+use App\Models\Plan;
 use App\Models\Seccion;
+use App\Models\Suscripcion;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -27,6 +29,51 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // ── Super-Admin ──
+        User::create([
+            'colegio_id' => null,
+            'nombre' => 'Super',
+            'apellidos' => 'Administrador',
+            'email' => 'superadmin@sistema.com',
+            'password' => Hash::make('password'),
+            'rol' => 'superadmin',
+            'activo' => true,
+        ]);
+
+        // ── Planes de Suscripción ──
+        $planBasico = Plan::create([
+            'nombre' => 'Básico',
+            'slug' => 'basico',
+            'precio_mensual' => 19.00,
+            'precio_anual' => 190.00,
+            'max_alumnos' => 100,
+            'caracteristicas' => ['Gestión de notas', 'Asistencia', 'Mensajería', 'Reportes básicos'],
+            'activo' => true,
+            'orden' => 1,
+        ]);
+
+        $planEstandar = Plan::create([
+            'nombre' => 'Estándar',
+            'slug' => 'estandar',
+            'precio_mensual' => 35.00,
+            'precio_anual' => 350.00,
+            'max_alumnos' => 300,
+            'caracteristicas' => ['Todo del plan Básico', 'Aula virtual', 'Pagos en línea', 'Avisos y comunicados', 'Soporte prioritario'],
+            'activo' => true,
+            'orden' => 2,
+        ]);
+
+        $planPremium = Plan::create([
+            'nombre' => 'Premium',
+            'slug' => 'premium',
+            'precio_mensual' => 55.00,
+            'precio_anual' => 550.00,
+            'max_alumnos' => 1000,
+            'caracteristicas' => ['Todo del plan Estándar', 'Alumnos ilimitados*', 'Multi-sede', 'API de integración', 'Soporte dedicado', 'Personalización de marca'],
+            'activo' => true,
+            'orden' => 3,
+        ]);
+
         // ── Colegio demo ──
         $colegio = Colegio::create([
             'nombre' => 'Colegio Demo San Martín',
@@ -39,6 +86,17 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $c = $colegio->id;
+
+        // Suscripción del colegio demo
+        Suscripcion::create([
+            'colegio_id' => $c,
+            'plan_id' => $planEstandar->id,
+            'estado' => 'activa',
+            'ciclo' => 'anual',
+            'fecha_inicio' => now(),
+            'fecha_fin' => now()->addYear(),
+            'monto' => $planEstandar->precio_anual,
+        ]);
 
         // ── Admin ──
         User::create([

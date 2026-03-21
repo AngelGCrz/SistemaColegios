@@ -14,13 +14,16 @@ use App\Models\Matricula;
 use App\Models\Nivel;
 use App\Models\Padre;
 use App\Models\Periodo;
+use App\Models\Plan;
 use App\Models\Seccion;
+use App\Models\Suscripcion;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 trait CreaDatosDePrueba
 {
     protected Colegio $colegio;
+    protected User $superadminUser;
     protected User $adminUser;
     protected User $docenteUser;
     protected User $alumnoUser;
@@ -36,14 +39,47 @@ trait CreaDatosDePrueba
     protected CursoSeccion $cursoSeccion;
     protected Bimestre $bimestre;
     protected Matricula $matricula;
+    protected Plan $plan;
+    protected Suscripcion $suscripcion;
 
     protected function crearDatosDePrueba(): void
     {
+        // Plan y superadmin
+        $this->plan = Plan::create([
+            'nombre' => 'Básico',
+            'slug' => 'basico',
+            'precio_mensual' => 19,
+            'precio_anual' => 190,
+            'max_alumnos' => 100,
+            'caracteristicas' => ['Gestión académica', 'Control de asistencia'],
+            'activo' => true,
+            'orden' => 1,
+        ]);
+
+        $this->superadminUser = User::create([
+            'nombre' => 'Super',
+            'apellidos' => 'Admin',
+            'email' => 'superadmin@test.com',
+            'password' => Hash::make('password'),
+            'rol' => 'superadmin',
+            'activo' => true,
+        ]);
+
         $this->colegio = Colegio::create([
             'nombre' => 'Colegio Test',
             'activo' => true,
             'fecha_vencimiento' => now()->addYear(),
             'plan' => 'basico',
+        ]);
+
+        $this->suscripcion = Suscripcion::create([
+            'colegio_id' => $this->colegio->id,
+            'plan_id' => $this->plan->id,
+            'estado' => 'activa',
+            'ciclo' => 'anual',
+            'fecha_inicio' => now(),
+            'fecha_fin' => now()->addYear(),
+            'monto' => 190,
         ]);
 
         $c = $this->colegio->id;

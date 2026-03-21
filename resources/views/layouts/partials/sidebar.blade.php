@@ -10,8 +10,23 @@
     <nav class="relative z-20 bg-white h-full py-4 px-3 space-y-1">
         @php $rol = auth()->user()->rol; @endphp
 
+        {{-- ========= SUPER-ADMIN ========= --}}
+        @if($rol === 'superadmin')
+            <x-sidebar-link href="{{ route('superadmin.dashboard') }}" icon="chart" :active="request()->routeIs('superadmin.dashboard')">
+                Dashboard
+            </x-sidebar-link>
+
+            <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Plataforma</p>
+
+            <x-sidebar-link href="{{ route('superadmin.colegios.index') }}" icon="building" :active="request()->routeIs('superadmin.colegios.*')">
+                Colegios
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('superadmin.planes.index') }}" icon="credit-card" :active="request()->routeIs('superadmin.planes.*')">
+                Planes
+            </x-sidebar-link>
+
         {{-- ========= ADMIN ========= --}}
-        @if($rol === 'admin')
+        @elseif($rol === 'admin')
             <x-sidebar-link href="{{ route('admin.dashboard') }}" icon="home" :active="request()->routeIs('admin.dashboard')">
                 Dashboard
             </x-sidebar-link>
@@ -56,6 +71,12 @@
 
             <x-sidebar-link href="{{ route('admin.avisos.index') }}" icon="megaphone" :active="request()->routeIs('admin.avisos.*')">
                 Avisos
+            </x-sidebar-link>
+
+            <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Suscripción</p>
+
+            <x-sidebar-link href="{{ route('suscripcion.checkout') }}" icon="credit-card" :active="request()->routeIs('suscripcion.*')">
+                Mi Plan
             </x-sidebar-link>
 
         {{-- ========= DOCENTE ========= --}}

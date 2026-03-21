@@ -19,6 +19,11 @@ class CheckColegioActivo
             return redirect()->route('login');
         }
 
+        // Super-admin no tiene colegio vinculado
+        if ($user->esSuperAdmin()) {
+            return $next($request);
+        }
+
         $colegio = $user->colegio;
 
         if (!$colegio || !$colegio->estaActivo()) {

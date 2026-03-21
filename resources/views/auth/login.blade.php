@@ -27,6 +27,12 @@
                 </div>
             @endif
 
+            @if(session('success'))
+                <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
@@ -58,6 +64,10 @@
                     Iniciar Sesión
                 </button>
             </form>
+
+            <p class="text-center text-sm text-gray-500 mt-4">
+                ¿No tienes cuenta? <a href="{{ route('registro') }}" class="text-blue-600 hover:underline font-medium">Registra tu colegio</a>
+            </p>
         </div>
 
         <p class="text-center text-gray-500 text-sm mt-6">

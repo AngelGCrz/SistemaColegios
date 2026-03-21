@@ -44,18 +44,27 @@
 
 **Entregable**: Aula virtual funcional integrada al ERP
 
-### Fase 4: Multi-Tenancy y SaaS (Semanas 13-16)
+### Fase 4: Multi-Tenancy y SaaS (Semanas 13-16) ✅
 **Objetivo**: Preparar para vender como servicio
 
-- [ ] Panel super-admin para gestionar colegios
-- [ ] Registro de nuevos colegios (onboarding)
-- [ ] Planes de suscripción (básico, estándar, premium)
-- [ ] Verificación de suscripción vigente
-- [ ] Subdominios por colegio (opcional)
-- [ ] Página de landing/marketing
-- [ ] Pasarela de pago para suscripciones (Mercado Pago / PayPal)
+- [x] Panel super-admin para gestionar colegios
+- [x] Registro de nuevos colegios (onboarding)
+- [x] Planes de suscripción (básico, estándar, premium)
+- [x] Verificación de suscripción vigente
+- [x] Subdominios por colegio (opcional)
+- [x] Página de landing/marketing
+- [x] Pasarela de pago para suscripciones (Mercado Pago / PayPal)
 
-**Entregable**: Plataforma SaaS lista para venta
+**Entregable**: Plataforma SaaS lista para venta ✅
+
+**Implementación técnica**:
+- SuperAdmin: Dashboard con métricas, CRUD de colegios y planes, cambio de plan, toggle activo
+- Onboarding: Formulario multi-step con AlpineJS, trial 30 días automático
+- 3 Planes: Básico ($19/mes), Estándar ($35/mes), Premium ($55/mes) con límites de alumnos
+- Middlewares: VerificarSuscripcion (suscripcion.vigente), VerificarLimitePlan (plan.limite)
+- Landing page con pricing, features, CTA
+- MercadoPago integrado con modo demo (sin token activa directamente)
+- Tests: 113 tests, 261 assertions pasando
 
 ### Fase 5: Pulido y Lanzamiento (Semanas 17-20)
 **Objetivo**: Calidad de producción

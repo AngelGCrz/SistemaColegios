@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Colegio extends Model
 {
     protected $fillable = [
         'nombre', 'codigo_modular', 'direccion', 'telefono',
-        'email', 'logo', 'plan', 'activo', 'fecha_vencimiento',
+        'email', 'logo', 'subdominio', 'plan', 'activo', 'fecha_vencimiento',
+        'contacto_nombre', 'contacto_telefono', 'contacto_email',
     ];
 
     protected $casts = [
@@ -57,8 +59,25 @@ class Colegio extends Model
         return $this->periodos()->where('activo', true)->first();
     }
 
+    public function suscripciones(): HasMany
+    {
+        return $this->hasMany(Suscripcion::class);
+    }
+
+    public function suscripcionActiva(): HasOne
+    {
+        return $this->hasOne(Suscripcion::class)
+            ->whereIn('estado', ['activa', 'trial'])
+            ->latest('id');
+    }
+
     public function estaActivo(): bool
     {
         return $this->activo && ($this->fecha_vencimiento === null || $this->fecha_vencimiento->isFuture());
+    }
+
+    public function alumnosCount(): int
+    {
+        return $this->alumnos()->count();
     }
 }

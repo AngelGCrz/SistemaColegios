@@ -12,6 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
             'colegio.activo' => \App\Http\Middleware\CheckColegioActivo::class,
+            'suscripcion.vigente' => \App\Http\Middleware\VerificarSuscripcion::class,
+            'plan.limite' => \App\Http\Middleware\VerificarLimitePlan::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'webhook/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

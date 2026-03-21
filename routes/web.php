@@ -9,6 +9,10 @@ use App\Http\Controllers\Padre;
 use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\BoletaController;
 use App\Http\Controllers\ArchivoController;
+use App\Http\Controllers\SuperAdmin;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\PagoSuscripcionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +20,17 @@ use App\Http\Controllers\ArchivoController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/registro', [OnboardingController::class, 'mostrarRegistro'])->name('registro');
+Route::post('/registro', [OnboardingController::class, 'registrar'])->name('registro.store');
+
+// Webhook de MercadoPago (sin auth, sin CSRF)
+Route::post('/webhook/mercadopago', [PagoSuscripcionController::class, 'webhook'])->name('webhook.mercadopago');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,11 +40,42 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'colegio.activo'])->group(function () {
 
+    // ===============================================
+    // SUPER-ADMIN
+    // ===============================================
+    Route::middleware('role:superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::get('/dashboard', [SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
+
+        // Gestión de colegios
+        Route::get('/colegios', [SuperAdmin\ColegioController::class, 'index'])->name('colegios.index');
+        Route::get('/colegios/create', [SuperAdmin\ColegioController::class, 'create'])->name('colegios.create');
+        Route::post('/colegios', [SuperAdmin\ColegioController::class, 'store'])->name('colegios.store');
+        Route::get('/colegios/{colegio}', [SuperAdmin\ColegioController::class, 'show'])->name('colegios.show');
+        Route::get('/colegios/{colegio}/edit', [SuperAdmin\ColegioController::class, 'edit'])->name('colegios.edit');
+        Route::put('/colegios/{colegio}', [SuperAdmin\ColegioController::class, 'update'])->name('colegios.update');
+        Route::patch('/colegios/{colegio}/toggle', [SuperAdmin\ColegioController::class, 'toggleActivo'])->name('colegios.toggle');
+        Route::post('/colegios/{colegio}/plan', [SuperAdmin\ColegioController::class, 'cambiarPlan'])->name('colegios.cambiarPlan');
+
+        // Gestión de planes
+        Route::get('/planes', [SuperAdmin\PlanController::class, 'index'])->name('planes.index');
+        Route::get('/planes/create', [SuperAdmin\PlanController::class, 'create'])->name('planes.create');
+        Route::post('/planes', [SuperAdmin\PlanController::class, 'store'])->name('planes.store');
+        Route::get('/planes/{plan}/edit', [SuperAdmin\PlanController::class, 'edit'])->name('planes.edit');
+        Route::put('/planes/{plan}', [SuperAdmin\PlanController::class, 'update'])->name('planes.update');
+    });
+
     // Descarga de archivos (tareas y entregas)
     Route::get('/archivo/{tipo}/{id}', [ArchivoController::class, 'descargar'])
         ->name('archivo.descargar')
         ->where('tipo', 'tarea|entrega')
         ->where('id', '[0-9]+');
+
+    // Suscripción y pagos (para admin del colegio)
+    Route::middleware('role:admin')->prefix('suscripcion')->name('suscripcion.')->group(function () {
+        Route::get('/checkout', [PagoSuscripcionController::class, 'checkout'])->name('checkout');
+        Route::post('/procesar', [PagoSuscripcionController::class, 'procesar'])->name('procesar');
+        Route::get('/exito', [PagoSuscripcionController::class, 'exito'])->name('exito');
+    });
 
     // ===============================================
     // ADMIN

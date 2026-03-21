@@ -65,6 +65,19 @@ class UsuarioController extends Controller
             return back()->withErrors(['email' => 'Este email ya está registrado.'])->withInput();
         }
 
+        // Verificar límite de alumnos del plan
+        if ($data['rol'] === 'alumno') {
+            $colegio = auth()->user()->colegio;
+            $suscripcion = $colegio?->suscripcionActiva;
+            if ($suscripcion?->plan) {
+                $max = $suscripcion->plan->max_alumnos;
+                $actual = $colegio->alumnos()->count();
+                if ($actual >= $max) {
+                    return back()->withErrors(['rol' => "Límite de {$max} alumnos alcanzado. Actualiza tu plan para agregar más."])->withInput();
+                }
+            }
+        }
+
         DB::transaction(function () use ($data) {
             $user = User::create([
                 'colegio_id' => $this->colegioId(),
