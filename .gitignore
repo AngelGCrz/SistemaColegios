@@ -1,0 +1,63 @@
+# =========================
+# LARAVEL
+# =========================
+
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+# ENV (MUY IMPORTANTE)
+.env
+.env.backup
+.env.*.local
+
+# CACHE
+/bootstrap/cache/*.php
+
+# IDEs
+/.idea
+/.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# =========================
+# TAILWIND / FRONTEND
+# =========================
+
+/node_modules
+/dist
+/build
+
+# Logs
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Vite (Laravel usa Vite)
+public/build
+public/hot
+
+# =========================
+# TESTING
+# =========================
+
+/phpunit.result.cache
+
+# =========================
+# OTROS
+# =========================
+
+*.log
+*.cache
