@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Pago;
+use App\Notifications\Channels\WhatsAppChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -21,6 +22,10 @@ class PagoRegistrado extends Notification
 
         if (!in_array(config('mail.default'), ['log', 'array'])) {
             $channels[] = 'mail';
+        }
+
+        if (config('services.whatsapp.token') && $notifiable->telefono) {
+            $channels[] = WhatsAppChannel::class;
         }
 
         return $channels;
@@ -49,6 +54,13 @@ class PagoRegistrado extends Notification
             'monto' => $this->pago->monto,
             'estado' => $this->pago->estado,
             'alumno' => $this->pago->alumno->user->nombreCompleto(),
+        ];
+    }
+
+    public function toWhatsApp(object $notifiable): array
+    {
+        return [
+            'message' => "Nuevo cargo registrado: S/ {$this->pago->monto} - {$this->pago->conceptoPago->nombre}. Estado: {$this->pago->estado}.",
         ];
     }
 }

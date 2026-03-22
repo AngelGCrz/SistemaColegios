@@ -91,13 +91,15 @@
 ### Fase 6: Crecimiento (Semanas 21-24)
 **Objetivo**: Funciones avanzadas y crecimiento
 
-- [ ] App móvil o PWA
-- [ ] API REST para integraciones
-- [ ] Reportes avanzados con gráficos
-- [ ] Exportación a Excel
-- [ ] Importación masiva de alumnos (CSV)
-- [ ] Módulo de bibliotecas/recursos digitales
-- [ ] WhatsApp Business API para notificaciones
+- [x] App móvil o PWA (manifest.json, Service Worker, offline.html, iconos SVG)
+- [x] API REST para integraciones (Laravel Sanctum, 5 controllers, rutas /api/v1/)
+- [x] Reportes avanzados con gráficos (Chart.js, 5 endpoints de datos)
+- [x] Exportación a Excel (OpenSpout, alumnos/notas/asistencia/pagos)
+- [x] Importación masiva de alumnos (CSV con vista previa y validación)
+- [x] Módulo de bibliotecas/recursos digitales (CRUD admin + vista pública)
+- [x] WhatsApp Business API para notificaciones (Meta Graph API v18.0)
+
+**Tests**: 148 pasando (333 assertions)
 
 ---
 

@@ -73,6 +73,24 @@
                 Avisos
             </x-sidebar-link>
 
+            <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Análisis</p>
+
+            <x-sidebar-link href="{{ route('admin.reportes.index') }}" icon="chart" :active="request()->routeIs('admin.reportes.*')">
+                Reportes
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('admin.exportar.index') }}" icon="clipboard" :active="request()->routeIs('admin.exportar.*')">
+                Exportar Excel
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('admin.importar.index') }}" icon="globe" :active="request()->routeIs('admin.importar.*')">
+                Importar CSV
+            </x-sidebar-link>
+
+            <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Recursos</p>
+
+            <x-sidebar-link href="{{ route('admin.biblioteca.index') }}" icon="book" :active="request()->routeIs('admin.biblioteca.*')">
+                Biblioteca Digital
+            </x-sidebar-link>
+
             <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Suscripción</p>
 
             <x-sidebar-link href="{{ route('suscripcion.checkout') }}" icon="credit-card" :active="request()->routeIs('suscripcion.*')">
@@ -117,9 +135,12 @@
         @endif
 
         {{-- Compartido: Mensajes --}}
-        <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">Mensajes</p>
+        <p class="text-xs font-semibold text-gray-400 uppercase mt-4 mb-2 px-3">General</p>
         <x-sidebar-link href="{{ route('mensajes.inbox') }}" icon="mail" :active="request()->routeIs('mensajes.*')">
             Mensajes
+        </x-sidebar-link>
+        <x-sidebar-link href="{{ route('biblioteca.index') }}" icon="book" :active="request()->routeIs('biblioteca.*')">
+            Biblioteca
         </x-sidebar-link>
     </nav>
 </aside>

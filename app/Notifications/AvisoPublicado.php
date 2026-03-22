@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Aviso;
+use App\Notifications\Channels\WhatsAppChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -21,6 +22,10 @@ class AvisoPublicado extends Notification
 
         if (!in_array(config('mail.default'), ['log', 'array'])) {
             $channels[] = 'mail';
+        }
+
+        if (config('services.whatsapp.token') && $notifiable->telefono) {
+            $channels[] = WhatsAppChannel::class;
         }
 
         return $channels;
@@ -43,6 +48,13 @@ class AvisoPublicado extends Notification
             'tipo' => 'aviso',
             'aviso_id' => $this->aviso->id,
             'titulo' => $this->aviso->titulo,
+        ];
+    }
+
+    public function toWhatsApp(object $notifiable): array
+    {
+        return [
+            'message' => "Nuevo aviso: {$this->aviso->titulo}. {$this->aviso->contenido}",
         ];
     }
 }

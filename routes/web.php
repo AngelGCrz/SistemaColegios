@@ -13,6 +13,7 @@ use App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PagoSuscripcionController;
+use App\Http\Controllers\BibliotecaPublicaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,6 +137,34 @@ Route::middleware(['auth', 'colegio.activo'])->group(function () {
         Route::get('/avisos/create', [Admin\AvisoController::class, 'create'])->name('avisos.create');
         Route::post('/avisos', [Admin\AvisoController::class, 'store'])->name('avisos.store');
         Route::delete('/avisos/{aviso}', [Admin\AvisoController::class, 'destroy'])->name('avisos.destroy');
+
+        // Reportes avanzados
+        Route::get('/reportes', [Admin\ReporteController::class, 'index'])->name('reportes.index');
+        Route::get('/reportes/api/notas-por-curso', [Admin\ReporteApiWebController::class, 'notasPorCurso'])->name('reportes.api.notas');
+        Route::get('/reportes/api/asistencia-mensual', [Admin\ReporteApiWebController::class, 'asistenciaMensual'])->name('reportes.api.asistencia');
+        Route::get('/reportes/api/pagos-mensual', [Admin\ReporteApiWebController::class, 'pagosMensual'])->name('reportes.api.pagos');
+        Route::get('/reportes/api/matriculas-por-nivel', [Admin\ReporteApiWebController::class, 'matriculasPorNivel'])->name('reportes.api.matriculas');
+        Route::get('/reportes/api/rendimiento-general', [Admin\ReporteApiWebController::class, 'rendimientoGeneral'])->name('reportes.api.rendimiento');
+
+        // Exportar a Excel
+        Route::get('/exportar', [Admin\ExportController::class, 'index'])->name('exportar.index');
+        Route::get('/exportar/alumnos', [Admin\ExportController::class, 'alumnos'])->name('exportar.alumnos');
+        Route::get('/exportar/notas', [Admin\ExportController::class, 'notas'])->name('exportar.notas');
+        Route::get('/exportar/asistencia', [Admin\ExportController::class, 'asistencia'])->name('exportar.asistencia');
+        Route::get('/exportar/pagos', [Admin\ExportController::class, 'pagos'])->name('exportar.pagos');
+
+        // Importar alumnos CSV
+        Route::get('/importar', [Admin\ImportController::class, 'index'])->name('importar.index');
+        Route::post('/importar/preview', [Admin\ImportController::class, 'preview'])->name('importar.preview');
+        Route::post('/importar', [Admin\ImportController::class, 'store'])->name('importar.store');
+        Route::get('/importar/plantilla', [Admin\ImportController::class, 'plantilla'])->name('importar.plantilla');
+
+        // Biblioteca Digital (admin)
+        Route::get('/biblioteca', [Admin\BibliotecaController::class, 'index'])->name('biblioteca.index');
+        Route::get('/biblioteca/create', [Admin\BibliotecaController::class, 'create'])->name('biblioteca.create');
+        Route::post('/biblioteca', [Admin\BibliotecaController::class, 'store'])->name('biblioteca.store');
+        Route::delete('/biblioteca/{recurso}', [Admin\BibliotecaController::class, 'destroy'])->name('biblioteca.destroy');
+        Route::get('/biblioteca/{recurso}/descargar', [Admin\BibliotecaController::class, 'descargar'])->name('biblioteca.descargar');
     });
 
     // ===============================================
@@ -204,4 +233,8 @@ Route::middleware(['auth', 'colegio.activo'])->group(function () {
 
     // Boleta PDF
     Route::get('/boleta/{matricula}/pdf', [BoletaController::class, 'descargar'])->name('boleta.pdf');
+
+    // Biblioteca Digital (todos los roles)
+    Route::get('/biblioteca', [BibliotecaPublicaController::class, 'index'])->name('biblioteca.index');
+    Route::get('/biblioteca/{recurso}/descargar', [BibliotecaPublicaController::class, 'descargar'])->name('biblioteca.descargar');
 });

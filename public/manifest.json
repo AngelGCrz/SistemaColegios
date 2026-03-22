@@ -1,0 +1,22 @@
+{
+    "name": "SistemaColegios - ERP Educativo",
+    "short_name": "SistemaColegios",
+    "description": "Sistema de Gestión Educativa - ERP + Aula Virtual",
+    "start_url": "/login",
+    "display": "standalone",
+    "background_color": "#f9fafb",
+    "theme_color": "#2563eb",
+    "orientation": "any",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["education", "productivity"],
+    "lang": "es",
+    "dir": "ltr"
+}

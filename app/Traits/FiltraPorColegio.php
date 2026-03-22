@@ -8,13 +8,15 @@ namespace App\Traits;
  */
 trait FiltraPorColegio
 {
-    protected function colegioId(): int
+    protected function colegioId(): ?int
     {
         return auth()->user()->colegio_id;
     }
 
     protected function scopeColegio($query)
     {
-        return $query->where('colegio_id', $this->colegioId());
+        $colegioId = $this->colegioId();
+
+        return $colegioId ? $query->where('colegio_id', $colegioId) : $query;
     }
 }
