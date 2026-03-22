@@ -36,6 +36,18 @@
                     <dd class="font-medium text-gray-800">{{ $colegio->telefono ?: '—' }}</dd>
                 </div>
                 <div class="sm:col-span-2">
+                    <dt class="text-gray-500">Subdominio</dt>
+                    <dd class="font-medium text-gray-800">
+                        @if($colegio->subdominio)
+                            <a href="https://{{ $colegio->subdominio }}.{{ config('app.domain') }}" target="_blank" class="text-primary-600 hover:underline">
+                                {{ $colegio->subdominio }}.{{ config('app.domain') }}
+                            </a>
+                        @else
+                            <span class="text-amber-600">Sin configurar</span>
+                        @endif
+                    </dd>
+                </div>
+                <div class="sm:col-span-2">
                     <dt class="text-gray-500">Dirección</dt>
                     <dd class="font-medium text-gray-800">{{ $colegio->direccion ?: '—' }}</dd>
                 </div>

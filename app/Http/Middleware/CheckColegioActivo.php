@@ -35,6 +35,12 @@ class CheckColegioActivo
                 ->with('error', 'La suscripción del colegio ha expirado. Contacte al administrador.');
         }
 
+        // Verificar que el usuario pertenece al colegio del subdominio actual
+        $colegioSubdominio = app()->bound('colegio.subdomain') ? app('colegio.subdomain') : null;
+        if ($colegioSubdominio && $colegio->id !== $colegioSubdominio->id) {
+            abort(403, 'No tiene acceso a este colegio.');
+        }
+
         return $next($request);
     }
 }

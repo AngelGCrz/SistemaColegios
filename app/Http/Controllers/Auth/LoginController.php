@@ -25,7 +25,24 @@ class LoginController extends Controller
         if (Auth::attempt($credentials + ['activo' => true], $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended($this->redirectByRole());
+            $redirectUrl = $this->redirectByRole();
+
+            // Si el usuario tiene colegio con subdominio, redirigir a su subdominio
+            $user = auth()->user();
+            if ($user->colegio && $user->colegio->subdominio) {
+                $domain = config('app.domain');
+                $scheme = $request->isSecure() ? 'https' : 'http';
+                $subdomainBase = "{$scheme}://{$user->colegio->subdominio}.{$domain}";
+
+                // Solo redirigir si NO estamos ya en el subdominio correcto
+                $currentHost = $request->getHost();
+                $expectedHost = "{$user->colegio->subdominio}.{$domain}";
+                if (strtolower($currentHost) !== strtolower($expectedHost)) {
+                    return redirect()->away($subdomainBase . $redirectUrl);
+                }
+            }
+
+            return redirect()->intended($redirectUrl);
         }
 
         return back()->withErrors([
@@ -45,12 +62,12 @@ class LoginController extends Controller
     private function redirectByRole(): string
     {
         return match (auth()->user()->rol) {
-            'superadmin' => route('superadmin.dashboard'),
-            'admin' => route('admin.dashboard'),
-            'docente' => route('docente.dashboard'),
-            'alumno' => route('alumno.dashboard'),
-            'padre' => route('padre.dashboard'),
-            default => route('login'),
+            'superadmin' => '/superadmin/dashboard',
+            'admin' => '/admin/dashboard',
+            'docente' => '/docente/dashboard',
+            'alumno' => '/alumno/dashboard',
+            'padre' => '/padre/dashboard',
+            default => '/login',
         };
     }
 }

@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ColegioController extends Controller
 {
@@ -56,6 +57,7 @@ class ColegioController extends Controller
     {
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:200'],
+            'subdominio' => ['required', 'string', 'max:50', 'regex:/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/', 'unique:colegios,subdominio', 'not_in:www,api,mail,ftp,admin,app,panel'],
             'email' => ['nullable', 'email', 'max:255'],
             'direccion' => ['nullable', 'string', 'max:500'],
             'telefono' => ['nullable', 'string', 'max:20'],
@@ -78,6 +80,7 @@ class ColegioController extends Controller
 
             $colegio = Colegio::create([
                 'nombre' => $data['nombre'],
+                'subdominio' => $data['subdominio'],
                 'email' => $data['email'],
                 'direccion' => $data['direccion'],
                 'telefono' => $data['telefono'],
@@ -145,6 +148,7 @@ class ColegioController extends Controller
     {
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:200'],
+            'subdominio' => ['required', 'string', 'max:50', 'regex:/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/', Rule::unique('colegios', 'subdominio')->ignore($colegio->id), 'not_in:www,api,mail,ftp,admin,app,panel'],
             'email' => ['nullable', 'email', 'max:255'],
             'direccion' => ['nullable', 'string', 'max:500'],
             'telefono' => ['nullable', 'string', 'max:20'],

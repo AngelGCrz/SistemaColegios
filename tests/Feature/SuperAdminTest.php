@@ -68,6 +68,7 @@ class SuperAdminTest extends TestCase
     {
         $response = $this->actingAs($this->superadminUser)->post(route('superadmin.colegios.store'), [
             'nombre' => 'Colegio Nuevo',
+            'subdominio' => 'colegio-nuevo',
             'email' => 'nuevo@colegio.com',
             'direccion' => 'Av. Principal 123',
             'telefono' => '999888777',
@@ -111,6 +112,7 @@ class SuperAdminTest extends TestCase
         $response = $this->actingAs($this->superadminUser)
             ->put(route('superadmin.colegios.update', $this->colegio), [
                 'nombre' => 'Colegio Actualizado',
+                'subdominio' => $this->colegio->subdominio ?? 'colegio-actualizado',
                 'activo' => true,
             ]);
 

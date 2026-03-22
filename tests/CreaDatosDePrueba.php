@@ -67,6 +67,7 @@ trait CreaDatosDePrueba
 
         $this->colegio = Colegio::create([
             'nombre' => 'Colegio Test',
+            'subdominio' => 'colegio-test',
             'activo' => true,
             'fecha_vencimiento' => now()->addYear(),
             'plan' => 'basico',

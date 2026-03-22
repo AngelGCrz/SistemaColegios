@@ -30,7 +30,8 @@ class LoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect();
+        $this->assertStringContains('/admin/dashboard', $response->headers->get('Location'));
         $this->assertAuthenticatedAs($this->adminUser);
     }
 
@@ -41,7 +42,8 @@ class LoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('docente.dashboard'));
+        $response->assertRedirect();
+        $this->assertStringContains('/docente/dashboard', $response->headers->get('Location'));
         $this->assertAuthenticatedAs($this->docenteUser);
     }
 
@@ -52,7 +54,8 @@ class LoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('alumno.dashboard'));
+        $response->assertRedirect();
+        $this->assertStringContains('/alumno/dashboard', $response->headers->get('Location'));
         $this->assertAuthenticatedAs($this->alumnoUser);
     }
 
@@ -63,8 +66,17 @@ class LoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('padre.dashboard'));
+        $response->assertRedirect();
+        $this->assertStringContains('/padre/dashboard', $response->headers->get('Location'));
         $this->assertAuthenticatedAs($this->padreUser);
+    }
+
+    private function assertStringContains(string $needle, string $haystack): void
+    {
+        $this->assertTrue(
+            str_contains($haystack, $needle),
+            "Failed asserting that '{$haystack}' contains '{$needle}'."
+        );
     }
 
     public function test_credenciales_incorrectas_no_loguean(): void

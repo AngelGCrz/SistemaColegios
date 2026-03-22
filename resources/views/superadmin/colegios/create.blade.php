@@ -19,6 +19,16 @@
                 <input type="text" name="nombre" value="{{ old('nombre') }}" required
                        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500">
             </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Subdominio *</label>
+                <div class="flex items-center">
+                    <input type="text" name="subdominio" value="{{ old('subdominio') }}" required maxlength="50"
+                           pattern="[a-z0-9]([a-z0-9-]*[a-z0-9])?" placeholder="mi-colegio"
+                           class="flex-1 border rounded-l-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500">
+                    <span class="px-3 py-2 bg-gray-100 border border-l-0 rounded-r-lg text-sm text-gray-500">.{{ config('app.domain') }}</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">Solo letras minúsculas, números y guiones.</p>
+            </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Email del Colegio</label>
                 <input type="email" name="email" value="{{ old('email') }}"

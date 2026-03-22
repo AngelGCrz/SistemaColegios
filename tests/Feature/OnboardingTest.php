@@ -31,6 +31,7 @@ class OnboardingTest extends TestCase
     {
         $response = $this->post(route('registro.store'), [
             'colegio_nombre' => 'Colegio Registrado',
+            'colegio_subdominio' => 'colegio-registrado',
             'colegio_email' => 'info@registrado.com',
             'colegio_telefono' => '999000111',
             'colegio_direccion' => 'Calle Test 456',
@@ -69,7 +70,7 @@ class OnboardingTest extends TestCase
     {
         $response = $this->post(route('registro.store'), []);
         $response->assertSessionHasErrors([
-            'colegio_nombre', 'contacto_nombre', 'contacto_email',
+            'colegio_nombre', 'colegio_subdominio', 'contacto_nombre', 'contacto_email',
             'plan_id', 'admin_nombre', 'admin_apellidos',
             'admin_email', 'admin_password',
         ]);

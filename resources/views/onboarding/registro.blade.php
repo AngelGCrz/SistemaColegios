@@ -56,7 +56,23 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Colegio *</label>
                         <input type="text" name="colegio_nombre" value="{{ old('colegio_nombre') }}" required
+                               x-ref="colegioNombre"
+                               @input="$refs.subdominio.value = $event.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 50)"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subdominio *</label>
+                        <div class="flex items-center">
+                            <input type="text" name="colegio_subdominio" value="{{ old('colegio_subdominio') }}" required
+                                   x-ref="subdominio" maxlength="50"
+                                   pattern="[a-z0-9]([a-z0-9-]*[a-z0-9])?"
+                                   class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                                   placeholder="mi-colegio">
+                            <span class="px-4 py-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-500 text-sm whitespace-nowrap">
+                                .{{ config('app.domain', 'systemcolegio.com') }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Solo letras minúsculas, números y guiones. Se genera automáticamente del nombre.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

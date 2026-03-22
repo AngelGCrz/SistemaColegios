@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class OnboardingController extends Controller
 {
@@ -23,6 +24,7 @@ class OnboardingController extends Controller
     {
         $data = $request->validate([
             'colegio_nombre' => ['required', 'string', 'max:200'],
+            'colegio_subdominio' => ['required', 'string', 'max:50', 'regex:/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/', 'unique:colegios,subdominio', 'not_in:www,api,mail,ftp,admin,app,panel'],
             'colegio_email' => ['nullable', 'email', 'max:255'],
             'colegio_telefono' => ['nullable', 'string', 'max:20'],
             'colegio_direccion' => ['nullable', 'string', 'max:500'],
@@ -41,6 +43,7 @@ class OnboardingController extends Controller
         $colegio = DB::transaction(function () use ($data, $plan) {
             $colegio = Colegio::create([
                 'nombre' => $data['colegio_nombre'],
+                'subdominio' => $data['colegio_subdominio'],
                 'email' => $data['colegio_email'],
                 'telefono' => $data['colegio_telefono'],
                 'direccion' => $data['colegio_direccion'],
@@ -76,7 +79,10 @@ class OnboardingController extends Controller
             return $colegio;
         });
 
+        $domain = config('app.domain', 'localhost');
+        $subdomainUrl = "https://{$colegio->subdominio}.{$domain}";
+
         return redirect()->route('login')
-            ->with('success', "¡Registro exitoso! Tu colegio '{$colegio->nombre}' tiene 30 días de prueba gratuita. Inicia sesión con tu email y contraseña.");
+            ->with('success', "¡Registro exitoso! Tu colegio '{$colegio->nombre}' tiene 30 días de prueba gratuita. Tu URL es: {$subdomainUrl}. Inicia sesión con tu email y contraseña.");
     }
 }

@@ -66,7 +66,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-3">
                         <div class="font-medium text-gray-800">{{ $colegio->nombre }}</div>
-                        <div class="text-xs text-gray-400">{{ $colegio->email }}</div>
+                        <div class="text-xs text-gray-400">{{ $colegio->subdominio ? $colegio->subdominio . '.' . config('app.domain') : $colegio->email }}</div>
                     </td>
                     <td class="px-6 py-3">
                         <div class="text-gray-700">{{ $colegio->contacto_nombre }}</div>
