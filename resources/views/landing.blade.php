@@ -3,19 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Colegios - Gestión Escolar Integral</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: { 50:'#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' },
-                    }
-                }
-            }
+    <title>Sistema Colegios - Gestión Escolar Integral | Matrículas, Notas, Asistencia</title>
+    <meta name="description" content="Plataforma SaaS de gestión escolar integral. Administra matrículas, notas, asistencia, pagos, mensajería y aula virtual desde una sola plataforma. 30 días gratis.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url('/') }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sistema Colegios - Gestión Escolar Simple y Completa">
+    <meta property="og:description" content="Administra matrículas, notas, asistencia, pagos y aula virtual desde una sola plataforma. Prueba gratis 30 días.">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:site_name" content="Sistema Colegios">
+    <meta property="og:locale" content="es_LA">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sistema Colegios - Gestión Escolar Integral">
+    <meta name="twitter:description" content="Plataforma todo-en-uno para colegios. Matrículas, notas, asistencia, pagos y aula virtual.">
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Sistema Colegios",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "description": "Plataforma SaaS de gestión escolar integral para colegios de Latinoamérica.",
+        "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD",
+            "lowPrice": "19",
+            "highPrice": "55",
+            "offerCount": "3"
         }
+    }
     </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white">
     {{-- Navbar --}}

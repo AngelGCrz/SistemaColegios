@@ -169,6 +169,7 @@ class TareaController extends Controller
 
     private function autorizarDocente(CursoSeccion $cursoSeccion): void
     {
+        $cursoSeccion->loadMissing('seccion.grado.nivel', 'curso');
         $docente = auth()->user()->docente;
         abort_if(
             $cursoSeccion->docente_id !== $docente->id ||

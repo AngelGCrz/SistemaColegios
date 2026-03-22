@@ -9,6 +9,7 @@ use App\Models\Matricula;
 use App\Models\Pago;
 use App\Traits\FiltraPorColegio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -18,19 +19,25 @@ class DashboardController extends Controller
     {
         $colegioId = $this->colegioId();
 
-        $totalAlumnos = Alumno::where('colegio_id', $colegioId)->count();
+        $stats = Cache::remember("dashboard_stats_{$colegioId}", 300, function () use ($colegioId) {
+            return [
+                'totalAlumnos' => Alumno::where('colegio_id', $colegioId)->count(),
+                'matriculasActivas' => Matricula::where('colegio_id', $colegioId)
+                    ->where('estado', 'activa')
+                    ->count(),
+                'pagosPendientes' => Pago::where('colegio_id', $colegioId)
+                    ->where('estado', 'pendiente')
+                    ->sum('monto'),
+            ];
+        });
 
-        $matriculasActivas = Matricula::where('colegio_id', $colegioId)
-            ->where('estado', 'activa')
-            ->count();
+        $totalAlumnos = $stats['totalAlumnos'];
+        $matriculasActivas = $stats['matriculasActivas'];
+        $pagosPendientes = $stats['pagosPendientes'];
 
         $asistenciaHoy = Asistencia::where('colegio_id', $colegioId)
             ->where('fecha', Carbon::today())
             ->count();
-
-        $pagosPendientes = Pago::where('colegio_id', $colegioId)
-            ->where('estado', 'pendiente')
-            ->sum('monto');
 
         $pagosDelMes = Pago::where('colegio_id', $colegioId)
             ->where('estado', 'pagado')

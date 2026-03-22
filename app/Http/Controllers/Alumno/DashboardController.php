@@ -19,6 +19,7 @@ class DashboardController extends Controller
     {
         $alumno = auth()->user()->alumno;
         $matricula = $alumno->matriculaActiva();
+        $matricula?->load('seccion.grado.nivel', 'periodo');
 
         $avisos = Aviso::where('colegio_id', $this->colegioId())
             ->where('publicado', true)
@@ -33,6 +34,7 @@ class DashboardController extends Controller
             $tareasRecientes = Tarea::where('colegio_id', $this->colegioId())
                 ->where('publicada', true)
                 ->whereHas('cursoSeccion', fn ($q) => $q->where('seccion_id', $seccionId))
+                ->with('cursoSeccion.curso')
                 ->orderByDesc('created_at')
                 ->take(5)
                 ->get();
@@ -45,6 +47,7 @@ class DashboardController extends Controller
     {
         $alumno = auth()->user()->alumno;
         $matricula = $alumno->matriculaActiva();
+        $matricula?->load('seccion.grado.nivel', 'periodo');
 
         if (!$matricula) {
             return view('alumno.notas', ['notas' => collect(), 'matricula' => null]);

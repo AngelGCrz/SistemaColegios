@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         $padre = auth()->user()->padre;
-        $hijos = $padre->alumnos()->with('user', 'matriculas.seccion.grado.nivel')->get();
+        $hijos = $padre->alumnos()->with('user', 'matriculas.periodo', 'matriculas.seccion.grado.nivel')->get();
 
         $avisos = Aviso::where('colegio_id', $this->colegioId())
             ->where('publicado', true)
@@ -35,6 +35,7 @@ class DashboardController extends Controller
         // Verificar que el alumno es hijo de este padre
         $alumno = $padre->alumnos()->where('alumnos.id', $alumnoId)->firstOrFail();
         $matricula = $alumno->matriculaActiva();
+        $matricula?->load('seccion.grado.nivel', 'periodo');
 
         $notas = collect();
         $cursos = collect();
@@ -61,6 +62,7 @@ class DashboardController extends Controller
         $padre = auth()->user()->padre;
         $alumno = $padre->alumnos()->where('alumnos.id', $alumnoId)->firstOrFail();
         $matricula = $alumno->matriculaActiva();
+        $matricula?->load('seccion.grado.nivel');
 
         $asistencias = collect();
         if ($matricula) {

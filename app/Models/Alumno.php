@@ -51,6 +51,14 @@ class Alumno extends Model
 
     public function matriculaActiva()
     {
+        // Use loaded relation if available to avoid N+1
+        if ($this->relationLoaded('matriculas')) {
+            return $this->matriculas
+                ->where('estado', 'activa')
+                ->filter(fn ($m) => $m->relationLoaded('periodo') ? $m->periodo?->activo : true)
+                ->first();
+        }
+
         return $this->matriculas()
             ->where('estado', 'activa')
             ->whereHas('periodo', fn ($q) => $q->where('activo', true))

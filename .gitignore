@@ -5,35 +5,30 @@
 /vendor
 /node_modules
 /public/storage
+
+# STORAGE
 /storage/*.key
 /storage/app/public
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/storage/logs/*
-
-# ENV (MUY IMPORTANTE)
-.env
-.env.backup
-.env.*.local
+/storage/framework/
+/storage/logs/
 
 # CACHE
 /bootstrap/cache/*.php
 
-# IDEs
-/.idea
-/.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# OS
-.DS_Store
-Thumbs.db
+# ENV (MUY IMPORTANTE)
+/.env
+.env.backup
+.env.*.local
 
 # =========================
-# TAILWIND / FRONTEND
+# BUILD / VITE
+# =========================
+
+/public/build
+/public/hot
+
+# =========================
+# FRONTEND / TAILWIND
 # =========================
 
 /node_modules
@@ -45,15 +40,25 @@ npm-debug.log
 yarn-error.log
 pnpm-debug.log
 
-# Vite (Laravel usa Vite)
-public/build
-public/hot
-
 # =========================
 # TESTING
 # =========================
 
 /phpunit.result.cache
+
+# =========================
+# IDEs / OS
+# =========================
+
+/.idea
+/.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+.DS_Store
+Thumbs.db
 
 # =========================
 # OTROS

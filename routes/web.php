@@ -22,6 +22,16 @@ use App\Http\Controllers\PagoSuscripcionController;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
+// Health check para monitoreo de uptime
+Route::get('/health', function () {
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        return response()->json(['status' => 'ok', 'timestamp' => now()->toIso8601String()]);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Database unreachable'], 503);
+    }
+});
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
