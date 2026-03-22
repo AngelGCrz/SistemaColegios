@@ -28,11 +28,8 @@ class MatriculaController extends Controller
             ->orderByDesc('anio')
             ->get();
 
-        return view('admin.matriculas.index', compact('matriculas', 'periodos'));
-    }
+        $periodoActivo = $periodos->firstWhere('activo', true);
 
-    public function create()
-    {
         $alumnos = Alumno::where('colegio_id', $this->colegioId())
             ->with('user')
             ->get();
@@ -41,11 +38,7 @@ class MatriculaController extends Controller
             ->with('grado.nivel')
             ->get();
 
-        $periodos = Periodo::where('colegio_id', $this->colegioId())
-            ->where('activo', true)
-            ->get();
-
-        return view('admin.matriculas.create', compact('alumnos', 'secciones', 'periodos'));
+        return view('admin.matriculas.index', compact('matriculas', 'periodos', 'periodoActivo', 'alumnos', 'secciones'));
     }
 
     public function store(Request $request)

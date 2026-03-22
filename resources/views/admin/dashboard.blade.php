@@ -73,7 +73,7 @@
 
 {{-- Accesos rápidos --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <a href="{{ route('admin.matriculas.create') }}" class="bg-white rounded-xl shadow-sm border p-5 hover:shadow-md transition flex items-center space-x-4">
+    <a href="{{ route('admin.matriculas.index') }}" class="bg-white rounded-xl shadow-sm border p-5 hover:shadow-md transition flex items-center space-x-4">
         <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         </div>

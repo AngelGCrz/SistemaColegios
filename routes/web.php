@@ -100,6 +100,7 @@ Route::middleware(['auth', 'colegio.activo'])->group(function () {
 
         // Periodos
         Route::resource('periodos', Admin\PeriodoController::class)->except(['show', 'destroy']);
+        Route::patch('/periodos/{periodo}/activar', [Admin\PeriodoController::class, 'activar'])->name('periodos.activar');
 
         // Académico
         Route::get('/academico/niveles', [Admin\AcademicoController::class, 'niveles'])->name('academico.niveles');
@@ -114,10 +115,10 @@ Route::middleware(['auth', 'colegio.activo'])->group(function () {
 
         Route::get('/academico/asignaciones', [Admin\AcademicoController::class, 'asignaciones'])->name('academico.asignaciones');
         Route::post('/academico/asignaciones', [Admin\AcademicoController::class, 'storeAsignacion'])->name('academico.asignaciones.store');
+        Route::delete('/academico/asignaciones/{cursoSeccion}', [Admin\AcademicoController::class, 'destroyAsignacion'])->name('academico.asignaciones.destroy');
 
         // Matrículas
         Route::get('/matriculas', [Admin\MatriculaController::class, 'index'])->name('matriculas.index');
-        Route::get('/matriculas/create', [Admin\MatriculaController::class, 'create'])->name('matriculas.create');
         Route::post('/matriculas', [Admin\MatriculaController::class, 'store'])->name('matriculas.store');
         Route::patch('/matriculas/{matricula}/estado', [Admin\MatriculaController::class, 'updateEstado'])->name('matriculas.estado');
 
@@ -151,7 +152,7 @@ Route::middleware(['auth', 'colegio.activo'])->group(function () {
 
         // Asistencia
         Route::get('/asistencia', [Docente\AsistenciaController::class, 'seleccionar'])->name('asistencia.seleccionar');
-        Route::post('/asistencia/registrar', [Docente\AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
+        Route::match(['get', 'post'], '/asistencia/registrar', [Docente\AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
         Route::post('/asistencia/guardar', [Docente\AsistenciaController::class, 'guardar'])->name('asistencia.guardar');
 
         // Tareas

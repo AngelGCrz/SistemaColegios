@@ -7,7 +7,7 @@
     <p class="text-gray-500 text-sm">Niveles, grados, secciones, cursos y asignaciones</p>
 </div>
 
-<div x-data="{ tab: 'niveles' }" class="space-y-4">
+<div x-data="{ tab: '{{ $activeTab }}' }" class="space-y-4">
     {{-- Tabs --}}
     <div class="flex gap-2">
         <button @click="tab='niveles'" :class="tab==='niveles' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'" class="px-4 py-2 rounded-lg text-sm font-medium transition">Niveles y Grados</button>
@@ -21,7 +21,7 @@
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold">Niveles</h2>
         </div>
-        <form method="POST" action="{{ route('admin.academico.store-nivel') }}" class="flex gap-2 mb-4">
+        <form method="POST" action="{{ route('admin.academico.niveles.store') }}" class="flex gap-2 mb-4">
             @csrf
             <input type="text" name="nombre" placeholder="Ej: Primaria" required class="border rounded-lg px-3 py-2 text-sm flex-1">
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Agregar</button>
@@ -36,7 +36,7 @@
                 </div>
                 @endforeach
             </div>
-            <form method="POST" action="{{ route('admin.academico.store-grado') }}" class="flex gap-2 mt-2 ml-4">
+            <form method="POST" action="{{ route('admin.academico.grados.store') }}" class="flex gap-2 mt-2 ml-4">
                 @csrf
                 <input type="hidden" name="nivel_id" value="{{ $nivel->id }}">
                 <input type="text" name="nombre" placeholder="Ej: 1er Grado" required class="border rounded px-2 py-1 text-sm flex-1">
@@ -49,7 +49,7 @@
     {{-- Secciones --}}
     <div x-show="tab==='secciones'" class="bg-white rounded-xl shadow-sm border p-6">
         <h2 class="text-lg font-semibold mb-4">Secciones</h2>
-        <form method="POST" action="{{ route('admin.academico.store-seccion') }}" class="flex gap-2 mb-4 flex-wrap">
+        <form method="POST" action="{{ route('admin.academico.secciones.store') }}" class="flex gap-2 mb-4 flex-wrap">
             @csrf
             <select name="grado_id" required class="border rounded-lg px-3 py-2 text-sm">
                 <option value="">Grado...</option>
@@ -61,8 +61,14 @@
                 </optgroup>
                 @endforeach
             </select>
+            <select name="periodo_id" required class="border rounded-lg px-3 py-2 text-sm">
+                <option value="">Periodo...</option>
+                @foreach($periodos as $periodo)
+                <option value="{{ $periodo->id }}" {{ $periodo->activo ? 'selected' : '' }}>{{ $periodo->nombre }}</option>
+                @endforeach
+            </select>
             <input type="text" name="nombre" placeholder="Ej: A" required class="border rounded-lg px-3 py-2 text-sm w-32">
-            <input type="number" name="capacidad" placeholder="Capacidad" class="border rounded-lg px-3 py-2 text-sm w-28">
+            <input type="number" name="capacidad" placeholder="Capacidad" required class="border rounded-lg px-3 py-2 text-sm w-28">
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Crear</button>
         </form>
         <div class="overflow-x-auto">
@@ -90,7 +96,7 @@
     {{-- Cursos --}}
     <div x-show="tab==='cursos'" class="bg-white rounded-xl shadow-sm border p-6">
         <h2 class="text-lg font-semibold mb-4">Cursos</h2>
-        <form method="POST" action="{{ route('admin.academico.store-curso') }}" class="flex gap-2 mb-4">
+        <form method="POST" action="{{ route('admin.academico.cursos.store') }}" class="flex gap-2 mb-4">
             @csrf
             <input type="text" name="nombre" placeholder="Ej: Matemáticas" required class="border rounded-lg px-3 py-2 text-sm flex-1">
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Agregar</button>
@@ -107,7 +113,7 @@
     {{-- Asignaciones (Curso → Sección → Docente) --}}
     <div x-show="tab==='asignaciones'" class="bg-white rounded-xl shadow-sm border p-6">
         <h2 class="text-lg font-semibold mb-4">Asignar Curso a Sección</h2>
-        <form method="POST" action="{{ route('admin.academico.store-asignacion') }}" class="flex gap-2 mb-4 flex-wrap">
+        <form method="POST" action="{{ route('admin.academico.asignaciones.store') }}" class="flex gap-2 mb-4 flex-wrap">
             @csrf
             <select name="curso_id" required class="border rounded-lg px-3 py-2 text-sm">
                 <option value="">Curso...</option>
@@ -146,7 +152,7 @@
                         <td class="px-4 py-2">{{ $asig->seccion->nombreCompleto() }}</td>
                         <td class="px-4 py-2">{{ $asig->docente->user->apellidos ?? '—' }}, {{ $asig->docente->user->nombre ?? '' }}</td>
                         <td class="px-4 py-2 text-center">
-                            <form method="POST" action="{{ route('admin.academico.destroy-asignacion', $asig) }}" onsubmit="return confirm('¿Eliminar asignación?')">
+                            <form method="POST" action="{{ route('admin.academico.asignaciones.destroy', $asig) }}" onsubmit="return confirm('¿Eliminar asignación?')">
                                 @csrf @method('DELETE')
                                 <button class="text-xs text-red-600 hover:underline">Eliminar</button>
                             </form>

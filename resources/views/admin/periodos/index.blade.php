@@ -14,9 +14,13 @@
     <form method="POST" action="{{ route('admin.periodos.store') }}">
         @csrf
         <div class="grid grid-cols-2 gap-4">
-            <div class="col-span-2">
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                <input type="text" name="nombre" placeholder="Ej: 2025" required class="w-full border rounded-lg px-3 py-2 text-sm">
+                <input type="text" name="nombre" placeholder="Ej: Periodo 2025" required class="w-full border rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
+                <input type="number" name="anio" placeholder="{{ date('Y') }}" min="2020" max="2099" required class="w-full border rounded-lg px-3 py-2 text-sm">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Inicio</label>

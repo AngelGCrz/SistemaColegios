@@ -8,6 +8,7 @@ use App\Models\CursoSeccion;
 use App\Models\Docente;
 use App\Models\Grado;
 use App\Models\Nivel;
+use App\Models\Periodo;
 use App\Models\Seccion;
 use App\Traits\FiltraPorColegio;
 use Illuminate\Http\Request;
@@ -16,24 +17,52 @@ class AcademicoController extends Controller
 {
     use FiltraPorColegio;
 
-    // --- Niveles ---
-
-    public function niveles()
+    private function allVarsForIndex(string $activeTab = 'niveles'): array
     {
-        $niveles = Nivel::where('colegio_id', $this->colegioId())
+        $colegioId = $this->colegioId();
+
+        $niveles = Nivel::where('colegio_id', $colegioId)
             ->with('grados')
             ->orderBy('orden')
             ->get();
 
-        return view('admin.academico.niveles', compact('niveles'));
+        $secciones = Seccion::where('colegio_id', $colegioId)
+            ->with(['grado.nivel', 'periodo'])
+            ->withCount('matriculas')
+            ->get();
+
+        $cursos = Curso::where('colegio_id', $colegioId)
+            ->orderBy('nombre')
+            ->get();
+
+        $asignaciones = CursoSeccion::where('colegio_id', $colegioId)
+            ->with(['curso', 'seccion.grado.nivel', 'docente.user'])
+            ->get();
+
+        $docentes = Docente::where('colegio_id', $colegioId)->with('user')->get();
+
+        $periodos = Periodo::where('colegio_id', $colegioId)
+            ->orderByDesc('anio')
+            ->get();
+
+        return compact('niveles', 'secciones', 'cursos', 'asignaciones', 'docentes', 'periodos', 'activeTab');
+    }
+
+    // --- Niveles ---
+
+    public function niveles()
+    {
+        return view('admin.academico.index', $this->allVarsForIndex('niveles'));
     }
 
     public function storeNivel(Request $request)
     {
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:50'],
-            'orden' => ['required', 'integer', 'min:0'],
+            'orden' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        $data['orden'] = $data['orden'] ?? Nivel::where('colegio_id', $this->colegioId())->max('orden') + 1;
 
         Nivel::create(['colegio_id' => $this->colegioId(), ...$data]);
 
@@ -47,13 +76,15 @@ class AcademicoController extends Controller
         $data = $request->validate([
             'nivel_id' => ['required', 'exists:niveles,id'],
             'nombre' => ['required', 'string', 'max:50'],
-            'orden' => ['required', 'integer', 'min:0'],
+            'orden' => ['nullable', 'integer', 'min:0'],
         ]);
 
         // Verificar que el nivel pertenece al colegio
         $nivel = Nivel::where('id', $data['nivel_id'])
             ->where('colegio_id', $this->colegioId())
             ->firstOrFail();
+
+        $data['orden'] = $data['orden'] ?? Grado::where('nivel_id', $data['nivel_id'])->max('orden') + 1;
 
         Grado::create(['colegio_id' => $this->colegioId(), ...$data]);
 
@@ -64,18 +95,7 @@ class AcademicoController extends Controller
 
     public function secciones(Request $request)
     {
-        $periodoId = $request->periodo_id;
-
-        $secciones = Seccion::where('colegio_id', $this->colegioId())
-            ->when($periodoId, fn ($q) => $q->where('periodo_id', $periodoId))
-            ->with(['grado.nivel', 'periodo'])
-            ->get();
-
-        $grados = Grado::where('colegio_id', $this->colegioId())
-            ->with('nivel')
-            ->get();
-
-        return view('admin.academico.secciones', compact('secciones', 'grados'));
+        return view('admin.academico.index', $this->allVarsForIndex('secciones'));
     }
 
     public function storeSeccion(Request $request)
@@ -96,11 +116,7 @@ class AcademicoController extends Controller
 
     public function cursos()
     {
-        $cursos = Curso::where('colegio_id', $this->colegioId())
-            ->orderBy('nombre')
-            ->get();
-
-        return view('admin.academico.cursos', compact('cursos'));
+        return view('admin.academico.index', $this->allVarsForIndex('cursos'));
     }
 
     public function storeCurso(Request $request)
@@ -120,15 +136,7 @@ class AcademicoController extends Controller
 
     public function asignaciones()
     {
-        $asignaciones = CursoSeccion::where('colegio_id', $this->colegioId())
-            ->with(['curso', 'seccion.grado.nivel', 'docente.user'])
-            ->get();
-
-        $cursos = Curso::where('colegio_id', $this->colegioId())->where('activo', true)->get();
-        $secciones = Seccion::where('colegio_id', $this->colegioId())->with('grado.nivel')->get();
-        $docentes = Docente::where('colegio_id', $this->colegioId())->with('user')->get();
-
-        return view('admin.academico.asignaciones', compact('asignaciones', 'cursos', 'secciones', 'docentes'));
+        return view('admin.academico.index', $this->allVarsForIndex('asignaciones'));
     }
 
     public function storeAsignacion(Request $request)
@@ -151,5 +159,14 @@ class AcademicoController extends Controller
         CursoSeccion::create(['colegio_id' => $this->colegioId(), ...$data]);
 
         return back()->with('success', 'Asignación creada.');
+    }
+
+    public function destroyAsignacion(CursoSeccion $cursoSeccion)
+    {
+        abort_if($cursoSeccion->colegio_id !== $this->colegioId(), 403);
+
+        $cursoSeccion->delete();
+
+        return back()->with('success', 'Asignación eliminada.');
     }
 }

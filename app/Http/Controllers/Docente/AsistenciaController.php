@@ -31,6 +31,10 @@ class AsistenciaController extends Controller
 
     public function registrar(Request $request)
     {
+        if ($request->isMethod('get')) {
+            return redirect()->route('docente.asistencia.seleccionar');
+        }
+
         $request->validate([
             'seccion_id' => ['required', 'exists:secciones,id'],
             'fecha' => ['required', 'date'],

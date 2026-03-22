@@ -52,6 +52,7 @@
                             @if($pago->estado === 'pendiente')
                             <form method="POST" action="{{ route('admin.pagos.pagado', $pago) }}" class="inline">
                                 @csrf @method('PATCH')
+                                <input type="hidden" name="fecha_pago" value="{{ date('Y-m-d') }}">
                                 <button class="text-xs text-green-600 hover:underline">Marcar Pagado</button>
                             </form>
                             @else

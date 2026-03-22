@@ -22,7 +22,7 @@ class PeriodoController extends Controller
 
     public function create()
     {
-        return view('admin.periodos.create');
+        return redirect()->route('admin.periodos.index');
     }
 
     public function store(Request $request)
@@ -54,7 +54,7 @@ class PeriodoController extends Controller
     {
         abort_if($periodo->colegio_id !== $this->colegioId(), 403);
 
-        return view('admin.periodos.edit', compact('periodo'));
+        return redirect()->route('admin.periodos.index');
     }
 
     public function update(Request $request, Periodo $periodo)
@@ -81,5 +81,17 @@ class PeriodoController extends Controller
 
         return redirect()->route('admin.periodos.index')
             ->with('success', 'Periodo actualizado exitosamente.');
+    }
+
+    public function activar(Periodo $periodo)
+    {
+        abort_if($periodo->colegio_id !== $this->colegioId(), 403);
+
+        Periodo::where('colegio_id', $this->colegioId())
+            ->update(['activo' => false]);
+
+        $periodo->update(['activo' => true]);
+
+        return back()->with('success', 'Periodo activado exitosamente.');
     }
 }
