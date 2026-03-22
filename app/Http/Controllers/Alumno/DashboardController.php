@@ -7,6 +7,8 @@ use App\Models\Aviso;
 use App\Models\EntregaTarea;
 use App\Models\Nota;
 use App\Models\Tarea;
+use App\Models\CursoSeccion;
+use App\Models\Bimestre;
 use App\Traits\FiltraPorColegio;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -50,15 +52,27 @@ class DashboardController extends Controller
         $matricula?->load('seccion.grado.nivel', 'periodo');
 
         if (!$matricula) {
-            return view('alumno.notas', ['notas' => collect(), 'matricula' => null]);
+            return view('alumno.notas', [
+                'notas' => collect(),
+                'matricula' => null,
+                'cursos' => collect(),
+                'bimestres' => collect(),
+            ]);
         }
 
         $notas = Nota::where('matricula_id', $matricula->id)
             ->with(['cursoSeccion.curso', 'bimestre'])
-            ->get()
-            ->groupBy('cursoSeccion.curso.nombre');
+            ->get();
 
-        return view('alumno.notas', compact('notas', 'matricula'));
+        $cursos = CursoSeccion::where('seccion_id', $matricula->seccion_id)
+            ->with(['curso', 'docente.user'])
+            ->get();
+
+        $bimestres = Bimestre::where('periodo_id', $matricula->periodo_id)
+            ->orderBy('numero')
+            ->get();
+
+        return view('alumno.notas', compact('notas', 'matricula', 'cursos', 'bimestres'));
     }
 
     public function tareas()

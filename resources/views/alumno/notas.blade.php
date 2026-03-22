@@ -5,7 +5,7 @@
 <div class="mb-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-800">Mis Notas</h1>
-        <a href="{{ route('boleta.descargar', $matricula) }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
+        <a href="{{ route('boleta.pdf', $matricula) }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
             📄 Descargar Boleta
         </a>
     </div>
